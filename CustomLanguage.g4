@@ -25,34 +25,51 @@ import java.util.*;
     void declareVariable(String variable, String type) {
         symbolTable.put(variable, type);
     }
+
+    void print(String value) {
+        System.out.println(value);
+    }
 }
 
 // Definição das regras sintáticas
 program: statement*;
 
-statement: assignment | ifStatement | loopStatement | scanfStatement | printfStatement;
+statement: assignment | ifStatement | loopStatement | scanfStatement | printStatement;
 
-assignment: ID '=' expression ';';
+assignment returns [String type] 
+    : t=typeDeclaration ID '=' e=expression ';' 
+      {
+        if (symbolTable.containsKey($ID.text)) {
+          String varType = symbolTable.get($ID.text);
+          if (varType.equals($t.text)) {
+            symbolTable.put($ID.text, $t.text);
+            $type = $t.text;
+          } else {
+            throw new RuntimeException("Type mismatch for variable " + $ID.text);
+          }
+        } else {
+          declareVariable($ID.text, $t.text);
+          $type = $t.text;
+        }
+      };
 
-assignmentDecimal: 'float' ID '=' DECIMAL ';';
-
-assignmentString: 'string' ID '=' STRING ';';
+typeDeclaration: 'int' | 'float' | 'string' | 'bool';
 
 ifStatement: 'if' '(' expression ')' block ('else' block)?;
 
-loopStatement: whileStatement | doWhileStatement; // | forStatement;
+loopStatement: whileStatement | doWhileStatement | forStatement;
 
 whileStatement: 'while' '(' expression ')' block;
 
 doWhileStatement: 'do' block 'while' '(' expression ')' ';';
 
-// forStatement: 'for' '(' assignment? ';' expression? ';' assignment? ')' block;
+forStatement: 'for' '(' assignment? ';' expression? ';' assignment? ')' block;
 
 block: '{' statement* '}';
 
-scanfStatement: 'scanf' '(' ID ');';
+scanfStatement: 'scanf' '(' ID ')';
 
-printfStatement: 'printf' '(' STRING ');';
+printStatement: 'print' '(' (id=ID | str=STRING) ')' ';' {print($id != null ? $id.getText() : $str.getText());};
 
 expression: logicalExpression;
 
@@ -68,8 +85,9 @@ multiplicativeExpression: unaryExpression (('*' | '/') unaryExpression)*;
 
 unaryExpression: ('+' | '-') atomExpression | atomExpression;
 
-atomExpression: ID | INT | DECIMAL | '(' expression ')';
+atomExpression: ID | (INT | DECIMAL | STRING | BOOL) | '(' expression ')';
 
+BOOL: 'true' | 'false';
 
 // Definição dos tokens léxicos
 ID: [a-zA-Z][a-zA-Z0-9_]*;

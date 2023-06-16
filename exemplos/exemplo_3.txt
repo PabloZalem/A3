@@ -1,9 +1,13 @@
-a = 10;
-b = 5;
-c = z + b;
+bool a = true;
+int b = 5;
+int c = a + b;
 
-if (c > 15) {
-    printf("A soma e maior que 15.");
+if (x > 15) {
+    print("A soma é maior que 15.");
 } else {
-    printf("A soma e menor ou igual a 15.");
+    print("A soma e menor ou igual a 15.");
+}
+
+if (a){
+    print("Verdadeiro");
 }
