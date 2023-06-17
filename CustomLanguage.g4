@@ -75,17 +75,17 @@ printStatement: 'scrivere' '(' (id=ID | str=STRING) ')' ';' {regras.printString(
 
 expression: logicalExpression;
 
-logicalExpression: equalityExpression (('&&' | '||') equalityExpression)*;
+logicalExpression: equalityExpression ((AND | OR) equalityExpression)*;
 
-equalityExpression: relationalExpression (('==' | '!=') relationalExpression)*;
+equalityExpression: relationalExpression ((OPREL | OPREL) relationalExpression)*;
 
-relationalExpression: additiveExpression (('<' | '>' | '<=' | '>=') additiveExpression)*;
+relationalExpression: additiveExpression OPREL additiveExpression;
 
-additiveExpression: multiplicativeExpression (('+' | '-') multiplicativeExpression)*;
+additiveExpression: multiplicativeExpression ((ADD | SUB) multiplicativeExpression)*;
 
-multiplicativeExpression: unaryExpression (('*' | '/') unaryExpression)*;
+multiplicativeExpression: unaryExpression ((MUL | DIV) unaryExpression)*;
 
-unaryExpression: ('+' | '-') atomExpression | atomExpression;
+unaryExpression: (ADD | SUB) atomExpression | atomExpression;
 
 atomExpression: ID | (INT | DECIMAL | STRING | BOOL) | '(' expression ')';
 
@@ -100,3 +100,9 @@ DECIMAL: [0-9]+ '.' [0-9]+;
 STRING : '"' ~["\r\n]* '"';
 OPREL: '>' | '<' | '>=' | '<=' | '==' | '!=' ;
 WS: [ \t\r\n]+ -> skip;
+ADD: '+';
+SUB: '-';
+MUL: '*';
+DIV: '/';
+AND: '&&';
+OR: '||';
