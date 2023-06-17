@@ -7,7 +7,7 @@ import java.util.*;
 
 // Ações semânticas
 @members {
-  Rules regras = new Rules();
+  Pele pele = new Pele();
 
   // Tabela de símbolos para armazenar variáveis declaradas
     Map<String, String> symbolTable = new HashMap<>();
@@ -89,7 +89,9 @@ unaryExpression: ('+' | '-') atomExpression | atomExpression;
 
 atomExpression: ID | (INT | DECIMAL | STRING | BOOL) | '(' expression ')';
 
-BOOL: 'true' | 'false';
+BOOL: 'vero' {pele.BOOL("vero");} 
+    | 'falso' {pele.BOOL("falso");};
+
 
 // Definição dos tokens léxicos
 ID: [a-zA-Z][a-zA-Z0-9_]*;
