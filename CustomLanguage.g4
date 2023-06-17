@@ -7,7 +7,7 @@ import java.util.*;
 
 // Ações semânticas
 @members {
-  Rules regras = new Rules();
+  Pele pele = new Pele();
 
   // Tabela de símbolos para armazenar variáveis declaradas
     Map<String, String> symbolTable = new HashMap<>();
