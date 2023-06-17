@@ -52,4 +52,16 @@ public class Pele {
         }
 
     }
+
+    // Method that verify if true or false
+    public String BOOL(String input) {
+        String value = input.trim().toLowerCase();
+        if (value.equals("vero")) {
+            return "vero";
+        } else if (value.equals("falso")) {
+            return "falso";
+        } else {
+            throw new IllegalArgumentException("Valor BOOL inválido: " + input);
+        }
+    }
 }
