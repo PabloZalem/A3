@@ -66,34 +66,88 @@ public class Pele {
     }
 
     //Metodos para alguns pontos da gramatica sintatica
-        //Esse método tem como objetivo avaliar se a entrada esta de acordo sintaticamente, caso sim, retorna true.
-        public boolean parse(String input) {
-        try {
-            atomExpression(input);
-            return input.isEmpty();
-        } catch (Exception e) {
-            return false;
+        private void logicalExpression() {
+        equalityExpression();
+        while (matchTerminal("AND") || matchTerminal("OR")) {
+            if (matchTerminal("AND")) {
+                equalityExpression();
+            } else {
+                throw new RuntimeException("Expected 'AND'");
+            }
         }
     }
     
-        /*
-         verifica se a expressão é um identificador, um tipo terminal ou uma expressão entre parênteses válidos. 
-         Ele retornará sem exceções se a análise for bem-sucedida ou lança uma exceção se a expressão for inválida.
-         */
-        private void atomExpression(String input) {
-        if (matchID(input)) {
+    private void equalityExpression() {
+        relationalExpression();
+        while (matchTerminal("OPREL")) {
+            if (matchTerminal("OPREL")) {
+                relationalExpression();
+            } else {
+                throw new RuntimeException("Expected relational operator");
+            }
+        }
+    }
+    
+    private void relationalExpression() {
+        additiveExpression();
+        if (matchTerminal("OPREL")) {
+            if (matchTerminal("OPREL")) {
+                additiveExpression();
+            } else {
+                throw new RuntimeException("Expected relational operator");
+            }
+        } else {
+            throw new RuntimeException("Expected relational operator");
+        }
+    }
+    
+    private void additiveExpression() {
+        multiplicativeExpression();
+        while (matchTerminal("ADD") || matchTerminal("SUB")) {
+            if (matchTerminal("ADD")) {
+                multiplicativeExpression();
+            } else {
+                throw new RuntimeException("Expected '+'");
+            }
+        }
+    }
+    
+    private void multiplicativeExpression() {
+        unaryExpression();
+        while (matchTerminal("MUL") || matchTerminal("DIV")) {
+            if (matchTerminal("MUL")) {
+                unaryExpression();
+            } else {
+                throw new RuntimeException("Expected '*'");
+            }
+        }
+    }
+    
+    private void unaryExpression() {
+        if (matchTerminal("ADD") || matchTerminal("SUB")) {
+            if (matchTerminal("ADD")) {
+                atomExpression();
+            } else {
+                throw new RuntimeException("Expected '+'");
+            }
+        } else {
+            atomExpression();
+        }
+    }
+    
+    private void atomExpression() {
+        if (matchID()) {
             return;
         }
         
-        if (matchTerminal("INT", input) || matchTerminal("DECIMAL", input) || matchTerminal("STRING", input) 
-        || matchTerminal("BOOL", input)) 
-        {
+        if (matchTerminal("INT") || matchTerminal("DECIMAL") || matchTerminal("STRING") 
+        || matchTerminal("BOOL")) {
             return;
         }
         
-        if (matchTerminal("(", input)) {
-            atomExpression(input);
-            if (matchTerminal(")", input)) {
+        if (matchTerminal("(")) {
+            logicalExpression();
+            if (matchTerminal(")")) {
                 return;
             } else {
                 throw new RuntimeException("Expected ')'");
@@ -102,28 +156,12 @@ public class Pele {
         
         throw new RuntimeException("Invalid expression");
     }
-
-    /*
-    verifica se a sequência de caracteres corresponde a um identificador válido, 
-    retornando um valor booleano indicando se a correspondência é bem-sucedida ou não. 
-    */
-    private boolean matchID(String input) {
-        if (!input.isEmpty() && Character.isLetter(input.charAt(0))) {
-            int currentPosition = 1;
-            while (currentPosition < input.length() && (Character.isLetterOrDigit(input.charAt(currentPosition)) || input.charAt(currentPosition) == '_')) {
-                currentPosition++;
-            }
-            return true;
-        }
-        return false;
+    
+    private boolean matchID() {
+        // Implementação do matchID de acordo com a sua definição
     }
-
-    /*Verifica se a sequência de caracteres input começa com um terminal específico terminal, 
-    retornando true se houver correspondência e false caso contrário.*/
-    private boolean matchTerminal(String terminal, String input) {
-        if (input.startsWith(terminal)) {
-            return true;
-        }
-        return false;
+    
+    private boolean matchTerminal(String terminal) {
+        // Implementação do matchTerminal de acordo com a sua definição
     }
 }
