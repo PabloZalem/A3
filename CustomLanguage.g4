@@ -7,7 +7,9 @@ import java.util.*;
 
 // Ações semânticas
 @members {
-    // Tabela de símbolos para armazenar variáveis declaradas
+  Rules regras = new Rules();
+
+  // Tabela de símbolos para armazenar variáveis declaradas
     Map<String, String> symbolTable = new HashMap<>();
 
     // Verificar se uma variável foi declarada
@@ -25,14 +27,10 @@ import java.util.*;
     void declareVariable(String variable, String type) {
         symbolTable.put(variable, type);
     }
-
-    void print(String value) {
-        System.out.println(value);
-    }
 }
 
 // Definição das regras sintáticas
-program: statement*;
+program: start statement* end {regras.writeCode();};
 
 statement: assignment | ifStatement | loopStatement | scanfStatement | printStatement;
 
@@ -53,6 +51,10 @@ assignment returns [String type]
         }
       };
 
+start: 'inicio' {regras.printInicio();};
+
+end: 'fim' {regras.printFim();};
+
 typeDeclaration: 'int' | 'float' | 'string' | 'bool';
 
 ifStatement: 'if' '(' expression ')' block ('else' block)?;
@@ -67,9 +69,9 @@ forStatement: 'for' '(' assignment? ';' expression? ';' assignment? ')' block;
 
 block: '{' statement* '}';
 
-scanfStatement: 'scanf' '(' ID ')';
+scanfStatement: 'leggere' '(' ID ')';
 
-printStatement: 'print' '(' (id=ID | str=STRING) ')' ';' {print($id != null ? $id.getText() : $str.getText());};
+printStatement: 'scrivere' '(' (id=ID | str=STRING) ')' ';' {regras.printString($id != null ? $id.getText() : $str.getText());};
 
 expression: logicalExpression;
 
@@ -94,4 +96,5 @@ ID: [a-zA-Z][a-zA-Z0-9_]*;
 INT: [0-9]+;
 DECIMAL: [0-9]+ '.' [0-9]+;
 STRING : '"' ~["\r\n]* '"';
+OPREL: '>' | '<' | '>=' | '<=' | '==' | '!=' ;
 WS: [ \t\r\n]+ -> skip;

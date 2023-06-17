@@ -1,13 +1,15 @@
+inicio
 bool a = true;
 int b = 5;
 int c = a + b;
 
 if (x > 15) {
-    print("A soma é maior que 15.");
+    scrivere("A soma é maior que 15.");
 } else {
-    print("A soma e menor ou igual a 15.");
+    scrivere("A soma e menor ou igual a 15.");
 }
 
 if (a){
-    print("Verdadeiro");
+    scrivere("Verdadeiro");
 }
+fim
