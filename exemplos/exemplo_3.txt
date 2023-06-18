@@ -1,7 +1,6 @@
-inicio
-bool a = true;
+inizio
+bool a = vero;
 int b = 5;
-int c = a + b;
 
 if (x > 15) {
     scrivere("A soma é maior que 15.");
@@ -12,4 +11,4 @@ if (x > 15) {
 if (a){
     scrivere("Verdadeiro");
 }
-fim
+fine
