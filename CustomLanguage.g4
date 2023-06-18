@@ -26,7 +26,7 @@ assignment: type=('int' | 'float' | 'string' | 'bool') id=ID '=' (value = INT | 
 
 expression: atom (op=('*' | '/' | '+' | '-') atom)*;
 
-atom: ID | INT | DECIMAL | STRING | BOOL | '(' expression ')';
+atom: ID | INT | DECIMAL | STRING |'(' expression ')';
 
 end: 'fine' {pele.printFim();};
 
@@ -43,7 +43,7 @@ forStatement:
 
 block: '{' statement* '}';
 
-scanfStatement: 'leggere' '(' ID ')';
+scanfStatement: 'leggere' '(' id = ID  ')' ';' {pele.scanfString($id.getText());};
 
 printStatement:
 	'scrivere' '(' (id = ID | str = STRING) ')' ';' {pele.printString($id != null ? $id.getText() : $str.getText());

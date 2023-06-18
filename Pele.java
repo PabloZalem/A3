@@ -1,8 +1,10 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Pele {
 
@@ -18,6 +20,12 @@ public class Pele {
     // Method that prints a string
     public void printString(String str) {
         code += "System.out.println(" + str + ");";
+    }
+
+    public void scanfString(String id){
+        code += "Scanner scanner = new Scanner(System.in);\n";
+        code += "System.out.print(s:\"Digite uma string: \");\n";
+        code += "String str = scanner.nextLine();\n";
     }
 
     // Method that adds public class and private main method
