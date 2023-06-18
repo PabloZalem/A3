@@ -1,6 +1,6 @@
 inizio
 bool a = vero;
-int b = 5;
+int b = 1;
 
 if (x > 15) {
     scrivere("A soma é maior que 15.");
