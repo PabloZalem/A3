@@ -22,7 +22,7 @@ statement:
 	| scanfStatement
 	| printStatement;
 
-assignment: type=('int' | 'float' | 'string' | 'bool') id=ID '=' (value = INT | value = DECIMAL | value = STRING | value = BOOL | value=expression) ';' {pele.declararVariavel($id.getText(), $value.getText(), $type.getText());};
+assignment: type=('int' | 'float' | 'string' | 'bool') id=ID '=' (value = INT | value = DECIMAL | value = STRING | value = BOOL) ';' {pele.declararVariavel($id.getText(), $value.getText(), $type.getText());};
 
 expression: atom (op=('*' | '/' | '+' | '-') atom)*;
 
