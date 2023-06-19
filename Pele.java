@@ -7,6 +7,7 @@ import java.util.Map;
 public class Pele {
 
     String code = "";
+    String buffer = "";
     // Tabela de símbolos para armazenar variáveis declaradas
     Map<String, String> symbolTable = new HashMap<>();
 
@@ -32,13 +33,39 @@ public class Pele {
         code += "}\n";
     }
 
-    protected void declararVariavel(String nome, String valor, String tipo) {
+    protected void adicionaBuffer(String str) {
+        buffer += str;
+    }
+
+    protected void limpaBuffer() {
+
+        buffer = "";
+    }
+
+    protected void declararVariavel(String nome, String tipo) {
         // Implementação do declararVariavel de acordo com a sua definição
         // Verifica se a variável já foi declarada
         boolean isdeclared = checkVariableDeclared(nome);
 
         if (isdeclared) {
             throw new IllegalArgumentException("Variável já declarada: " + nome);
+        }
+
+        String valor = null;
+
+        if (tipo.equals("bool")) {
+            tipo = "boolean";
+        } else if (tipo.equals("string")) {
+            tipo = "String";
+            valor = this.buffer;
+        } else if (tipo.equals("int")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf((int) result);
+        } else if (tipo.equals("float")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf(result);
+        } else {
+            throw new IllegalArgumentException("Tipo de variável inválido: " + tipo);
         }
 
         // Verifica se o valor é compatível com o tipo
@@ -50,13 +77,60 @@ public class Pele {
         }
 
         // Adiciona a variavel na tabela de simbolos
-        this.symbolTable.put(valor, tipo);
+        this.symbolTable.put(nome, tipo);
+        
         // Adiciona a variavel no código
         if (tipo.equals("bool")) {
             valor = getValidJavaBoolean(valor);
             tipo = "boolean";
+        } else if (tipo.equals("float")) {
+            tipo = "double";
         }
+
         code += tipo + " " + nome + " = " + valor + ";";
+        this.limpaBuffer();
+    }
+
+    protected void atribuirVariavel(String nome) {
+        // Implementação do atribuirVariavel de acordo com a sua definição
+        // Verifica se a variável já foi declarada
+        boolean isdeclared = checkVariableDeclared(nome);
+
+        if (!isdeclared) {
+            throw new IllegalArgumentException("Variável não declarada: " + nome);
+        }
+        String tipo = this.symbolTable.get(nome);
+        // Tenta atribuir o valor a variável
+
+        String valor = null;
+
+        if (tipo.toLowerCase().equals("bool")) {
+            tipo = "boolean";
+        } else if (tipo.toLowerCase().equals("string")) {
+            tipo = "String";
+            valor = this.buffer;
+        } else if (tipo.toLowerCase().equals("int")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf((int) result);
+        } else if (tipo.toLowerCase().equals("float")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf(result);
+        } else {
+            throw new IllegalArgumentException("Tipo de variável inválido: " + tipo);
+        }
+
+        // Verifica se o valor é compatível com o tipo
+        boolean isValidType = checkVariableType(valor, tipo);
+        if (!isValidType) {
+            throw new IllegalArgumentException("Valor incompatível da variável: " + nome);
+        }
+
+        // Adiciona a variavel no código
+        if (tipo.equals("bool")) {
+            valor = getValidJavaBoolean(valor);
+        }
+        code += nome + " = " + valor + ";";
+        this.limpaBuffer();
     }
 
     private String getValidJavaBoolean(String value) {
@@ -70,22 +144,21 @@ public class Pele {
     }
 
     private boolean checkVariableType(String valor, String tipo){
-        if (tipo.equals("int")) {
+        System.out.println("Valor: " + valor + " Tipo: " + tipo);
+        if (tipo.toLowerCase().equals("int")) {
             try {
                 Integer.parseInt(valor);
             } catch (NumberFormatException e) {
                 return false;
             }
-        } else if (tipo.equals("float")) {
+        } else if (tipo.toLowerCase().equals("float")) {
             try {
                 Double.parseDouble(valor);
             } catch (NumberFormatException e) {
                 return false;
             }
-        } else if (tipo.equals("string")) {
-            if (valor.charAt(0) != '"' || valor.charAt(valor.length() - 1) != '"') {
-                return false;
-            }
+        } else if (tipo.toLowerCase().equals("string")) {
+            return true;
         } else if (tipo.equals("bool")) {
             if (!valor.equals("vero") && !valor.equals("falso")) {
                 return false;
@@ -124,4 +197,8 @@ public class Pele {
         }
 
     }
+
+    
+    
+
 }
