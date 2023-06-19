@@ -1,7 +1,0 @@
-inizio
-bool a = vero;
-int b = 1;
-
-scrivere("A soma e menor ou igual a 15.");
-
-fine
