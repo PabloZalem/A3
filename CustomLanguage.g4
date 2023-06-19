@@ -28,7 +28,7 @@ variableDeclaration: type=('int' | 'float' | 'string' | 'bool') id=ID '=' mathEx
 
 assignment: id=ID '=' (value = INT | value = DECIMAL | value = STRING | value = BOOL) ';' {pele.atribuirVariavel($id.getText(), $value.getText());};
 
-mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}) (value=OPMATH {pele.adicionaBuffer($value.getText());} (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}))* {pele.limpaBuffer();};
+mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}) (value=OPMATH {pele.adicionaBuffer($value.getText());} (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}))*;
 
 logicExpression: (value = INT | value = DECIMAL | value = STRING) OPREL (value = INT | value = DECIMAL | value = STRING);
 

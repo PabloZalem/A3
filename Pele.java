@@ -39,7 +39,6 @@ public class Pele {
     }
 
     protected void limpaBuffer() {
-        System.out.println("Adicionando ao buffer: " + buffer);
 
         buffer = "";
     }
@@ -47,13 +46,27 @@ public class Pele {
     protected void declararVariavel(String nome, String tipo) {
         // Implementação do declararVariavel de acordo com a sua definição
         // Verifica se a variável já foi declarada
-        String valor = "10";
         boolean isdeclared = checkVariableDeclared(nome);
-
-        System.out.println("Variável declarada: " + nome + " " + tipo + " " + valor);
 
         if (isdeclared) {
             throw new IllegalArgumentException("Variável já declarada: " + nome);
+        }
+
+        String valor = null;
+
+        if (tipo.equals("bool")) {
+            tipo = "boolean";
+        } else if (tipo.equals("string")) {
+            tipo = "String";
+            valor = this.buffer;
+        } else if (tipo.equals("int")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf((int) result);
+        } else if (tipo.equals("float")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf(result);
+        } else {
+            throw new IllegalArgumentException("Tipo de variável inválido: " + tipo);
         }
 
         // Verifica se o valor é compatível com o tipo
@@ -63,7 +76,6 @@ public class Pele {
                 throw new IllegalArgumentException("Valor incompatível da variável: " + nome);
             }
         }
-        System.out.println("Adicionado ao simbólo");
 
         // Adiciona a variavel na tabela de simbolos
         this.symbolTable.put(nome, tipo);
@@ -72,8 +84,12 @@ public class Pele {
         if (tipo.equals("bool")) {
             valor = getValidJavaBoolean(valor);
             tipo = "boolean";
+        } else if (tipo.equals("float")) {
+            tipo = "double";
         }
+        
         code += tipo + " " + nome + " = " + valor + ";";
+        this.limpaBuffer();
     }
 
     protected void atribuirVariavel(String nome, String valor) {
@@ -112,22 +128,21 @@ public class Pele {
     }
 
     private boolean checkVariableType(String valor, String tipo){
-        if (tipo.equals("int")) {
+        System.out.println("Valor: " + valor + " Tipo: " + tipo);
+        if (tipo.toLowerCase().equals("int")) {
             try {
                 Integer.parseInt(valor);
             } catch (NumberFormatException e) {
                 return false;
             }
-        } else if (tipo.equals("float")) {
+        } else if (tipo.toLowerCase().equals("float")) {
             try {
                 Double.parseDouble(valor);
             } catch (NumberFormatException e) {
                 return false;
             }
-        } else if (tipo.equals("string")) {
-            if (valor.charAt(0) != '"' || valor.charAt(valor.length() - 1) != '"') {
-                return false;
-            }
+        } else if (tipo.toLowerCase().equals("string")) {
+            return true;
         } else if (tipo.equals("bool")) {
             if (!valor.equals("vero") && !valor.equals("falso")) {
                 return false;
@@ -166,4 +181,8 @@ public class Pele {
         }
 
     }
+
+    
+    
+
 }
