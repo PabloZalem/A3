@@ -30,22 +30,19 @@ assignment: id=ID '=' mathExpression ';' {pele.atribuirVariavel($id.getText());}
 
 mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}) (value=OPMATH {pele.adicionaBuffer($value.getText());} (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}))*;
 
-logicExpression: (value = INT | value = DECIMAL | value = STRING) OPREL (value = INT | value = DECIMAL | value = STRING);
+logicExpression: (value = INT | value = DECIMAL | value = STRING | id = ID) {pele.code+=$value != null ? $value.getText() : $id.getText();} op = OPREL {pele.code+=$op.getText();} (value = INT | value = DECIMAL | value = STRING) {pele.code+=$value.getText();};
 
 end: 'fine' {pele.printFim();};
 
-ifStatement: 'se' '(' logicExpression ')' block ('altrimenti' block)?;
+ifStatement: 'se' '(' {pele.code += "\nif(";} logicExpression ')' {pele.code += ")\n";} block ('altrimenti' {pele.code += "else\n";} block)?;
 
-loopStatement: whileStatement | doWhileStatement | forStatement;
+loopStatement: whileStatement | doWhileStatement ;
 
-whileStatement: 'mentre' '(' logicExpression ')' block;
+whileStatement: 'mentre' '(' {pele.code += "\nwhile(";} logicExpression ')'{pele.code += ")";} block;
 
-doWhileStatement: 'fare' block 'mentre' '(' logicExpression ')' ';';
+doWhileStatement: 'fare' {pele.code += "\ndo";} block 'mentre' '(' {pele.code += "\nwhile(";} logicExpression ')' ';' {pele.code += ");";};
 
-forStatement:
-	'per' '(' assignment? ';' logicExpression? ';' assignment? ')' block;
-
-block: '{' statement* '}';
+block: '{' {pele.printAC();} statement* '}' {pele.printFC();};
 
 scanfStatement: 'leggere' '(' ID ')';
 
