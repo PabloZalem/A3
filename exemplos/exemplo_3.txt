@@ -1,6 +1,6 @@
 inizio
-bool a = vero;
-int b = 1;
+string b = 100;
+b = 10;
 
 scrivere("A soma e menor ou igual a 15.");
 

@@ -2,11 +2,13 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Pele {
 
     String code = "";
+    String buffer = "";
     // Tabela de símbolos para armazenar variáveis declaradas
     Map<String, String> symbolTable = new HashMap<>();
 
@@ -32,10 +34,23 @@ public class Pele {
         code += "}\n";
     }
 
-    protected void declararVariavel(String nome, String valor, String tipo) {
+    protected void adicionaBuffer(String str) {
+        buffer += str;
+    }
+
+    protected void limpaBuffer() {
+        System.out.println("Adicionando ao buffer: " + buffer);
+
+        buffer = "";
+    }
+
+    protected void declararVariavel(String nome, String tipo) {
         // Implementação do declararVariavel de acordo com a sua definição
         // Verifica se a variável já foi declarada
+        String valor = "10";
         boolean isdeclared = checkVariableDeclared(nome);
+
+        System.out.println("Variável declarada: " + nome + " " + tipo + " " + valor);
 
         if (isdeclared) {
             throw new IllegalArgumentException("Variável já declarada: " + nome);
@@ -48,15 +63,42 @@ public class Pele {
                 throw new IllegalArgumentException("Valor incompatível da variável: " + nome);
             }
         }
+        System.out.println("Adicionado ao simbólo");
 
         // Adiciona a variavel na tabela de simbolos
-        this.symbolTable.put(valor, tipo);
+        this.symbolTable.put(nome, tipo);
+        
         // Adiciona a variavel no código
         if (tipo.equals("bool")) {
             valor = getValidJavaBoolean(valor);
             tipo = "boolean";
         }
         code += tipo + " " + nome + " = " + valor + ";";
+    }
+
+    protected void atribuirVariavel(String nome, String valor) {
+        // Implementação do atribuirVariavel de acordo com a sua definição
+        // Verifica se a variável já foi declarada
+        boolean isdeclared = checkVariableDeclared(nome);
+
+        if (!isdeclared) {
+            throw new IllegalArgumentException("Variável não declarada: " + nome);
+        }
+
+        // Tenta atribuir o valor a variável
+
+        // Verifica se o valor é compatível com o tipo
+        String tipo = this.symbolTable.get(nome);
+        boolean isValidType = checkVariableType(valor, tipo);
+        if (!isValidType) {
+            throw new IllegalArgumentException("Valor incompatível da variável: " + nome);
+        }
+
+        // Adiciona a variavel no código
+        if (tipo.equals("bool")) {
+            valor = getValidJavaBoolean(valor);
+        }
+        code += nome + " = " + valor + ";";
     }
 
     private String getValidJavaBoolean(String value) {
