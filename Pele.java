@@ -2,7 +2,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Pele {
@@ -87,12 +86,12 @@ public class Pele {
         } else if (tipo.equals("float")) {
             tipo = "double";
         }
-        
+
         code += tipo + " " + nome + " = " + valor + ";";
         this.limpaBuffer();
     }
 
-    protected void atribuirVariavel(String nome, String valor) {
+    protected void atribuirVariavel(String nome) {
         // Implementação do atribuirVariavel de acordo com a sua definição
         // Verifica se a variável já foi declarada
         boolean isdeclared = checkVariableDeclared(nome);
@@ -100,11 +99,27 @@ public class Pele {
         if (!isdeclared) {
             throw new IllegalArgumentException("Variável não declarada: " + nome);
         }
-
+        String tipo = this.symbolTable.get(nome);
         // Tenta atribuir o valor a variável
 
+        String valor = null;
+
+        if (tipo.toLowerCase().equals("bool")) {
+            tipo = "boolean";
+        } else if (tipo.toLowerCase().equals("string")) {
+            tipo = "String";
+            valor = this.buffer;
+        } else if (tipo.toLowerCase().equals("int")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf((int) result);
+        } else if (tipo.toLowerCase().equals("float")) {
+            double result = ExpressionSolver.evaluateExpression(this.buffer);
+            valor = String.valueOf(result);
+        } else {
+            throw new IllegalArgumentException("Tipo de variável inválido: " + tipo);
+        }
+
         // Verifica se o valor é compatível com o tipo
-        String tipo = this.symbolTable.get(nome);
         boolean isValidType = checkVariableType(valor, tipo);
         if (!isValidType) {
             throw new IllegalArgumentException("Valor incompatível da variável: " + nome);
@@ -115,6 +130,7 @@ public class Pele {
             valor = getValidJavaBoolean(valor);
         }
         code += nome + " = " + valor + ";";
+        this.limpaBuffer();
     }
 
     private String getValidJavaBoolean(String value) {
