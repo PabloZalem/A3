@@ -17,19 +17,27 @@ public class Pele {
     }
     
     // Method that prints a string
-    public void printString(String str) {
+    protected void printString(String str) {
         code += "System.out.println(" + str + ");";
     }
 
     // Method that adds public class and private main method
-    public void printInicio() {
+    protected void printInicio() {
         code += "public class Output {\n";
         code += "public static void main(String[] args) {\n";
     }
 
     // Method that closes the public class and private main method
-    public void printFim() {
+    protected void printFim() {
         code += "}\n";
+        code += "}\n";
+    }
+
+    protected void printAC(){
+        code += "{\n";
+    }
+
+    protected void printFC(){
         code += "}\n";
     }
 
@@ -40,6 +48,16 @@ public class Pele {
     protected void limpaBuffer() {
 
         buffer = "";
+    }
+
+    protected void incrementaVariavel(String nome){
+        boolean isdeclared = checkVariableDeclared(nome);
+        
+        if (!isdeclared) {
+            throw new IllegalArgumentException("Variável não declarada: " + nome);
+        }
+
+        code+= nome + "++;\n";
     }
 
     protected void declararVariavel(String nome, String tipo) {

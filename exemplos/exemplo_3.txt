@@ -7,6 +7,26 @@ c = 15.5+15.5;
 b = "15.5"+"15.5";
 a = 15+15;
 
+se(a > 10)
+{
+    a = 15 + 20;
+    scrivere("a");
+}altrimenti
+{
+    b = "Vai Corinthians";
+    scrivere("b");
+}
+
+mentre(i < 3)
+{
+     scrivere("Numero 10");
+}
+   
+
+fare{
+    scrivere("Corinthians");
+}mentre(3 < 3);
+
 scrivere("A soma e menor ou igual a 15.");
 
 fine
