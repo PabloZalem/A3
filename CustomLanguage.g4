@@ -17,29 +17,33 @@ start: 'inizio' {pele.printInicio();};
 
 statement:
 	assignment
+	| variableDeclaration
 	| ifStatement
 	| loopStatement
 	| scanfStatement
 	| printStatement;
 
-assignment: type=('int' | 'float' | 'string' | 'bool') id=ID '=' (value = INT | value = DECIMAL | value = STRING | value = BOOL) ';' {pele.declararVariavel($id.getText(), $value.getText(), $type.getText());};
+variableDeclaration: type=('int' | 'float' | 'string' | 'bool') id=ID '=' mathExpression
+ ';' {pele.declararVariavel($id.getText(), $type.getText());};
 
-expression: atom (op=('*' | '/' | '+' | '-') atom)*;
+assignment: id=ID '=' mathExpression ';' {pele.atribuirVariavel($id.getText());};
 
-atom: ID | INT | DECIMAL | STRING |'(' expression ')';
+mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}) (value=OPMATH {pele.adicionaBuffer($value.getText());} (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}))*;
+
+atom: ID | INT | DECIMAL | STRING | BOOL | '(' expression ')';
 
 end: 'fine' {pele.printFim();};
 
-ifStatement: 'se' '(' expression ')' block ('altrimenti' block)?;
+ifStatement: 'se' '(' logicExpression ')' block ('altrimenti' block)?;
 
 loopStatement: whileStatement | doWhileStatement | forStatement;
 
-whileStatement: 'mentre' '(' expression ')' block;
+whileStatement: 'mentre' '(' logicExpression ')' block;
 
-doWhileStatement: 'fare' block 'mentre' '(' expression ')' ';';
+doWhileStatement: 'fare' block 'mentre' '(' logicExpression ')' ';';
 
 forStatement:
-	'per' '(' assignment? ';' expression? ';' assignment? ')' block;
+	'per' '(' assignment? ';' logicExpression? ';' assignment? ')' block;
 
 block: '{' statement* '}';
 
@@ -58,9 +62,6 @@ DECIMAL: [0-9]+ '.' [0-9]+;
 STRING: '"' ~["\r\n]* '"';
 OPREL: '>' | '<' | '>=' | '<=' | '==' | '!=';
 WS: [ \t\r\n]+ -> skip;
-ADD: '+';
-SUB: '-';
-MUL: '*';
-DIV: '/';
+OPMATH: '+' | '-' | '*' | '/';
 AND: '&&';
 OR: '||';
