@@ -188,7 +188,7 @@ public class Pele {
     }
 
     // Método que verifica se a variável já foi declarada
-    private boolean checkVariableDeclared(String nome) {
+    protected boolean checkVariableDeclared(String nome) {
         if (!this.symbolTable.containsKey(nome)) {
             return false;
         } else {
