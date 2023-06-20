@@ -30,7 +30,7 @@ assignment: id=ID '=' mathExpression ';' {pele.atribuirVariavel($id.getText());}
 
 mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}) (value=OPMATH {pele.adicionaBuffer($value.getText());} (value = INT {pele.adicionaBuffer($value.getText());} | value = DECIMAL {pele.adicionaBuffer($value.getText());} | value = STRING {pele.adicionaBuffer($value.getText());}))*;
 
-logicExpression: (value = INT | value = DECIMAL | value = STRING | id = ID) {pele.code+=$value != null ? $value.getText() : $id.getText();} op = OPREL {pele.code+=$op.getText();} (value = INT | value = DECIMAL | value = STRING) {pele.code+=$value.getText();};
+logicExpression: (value = INT | value = DECIMAL | value = STRING | id = ID {boolean declarado = pele.checkVariableDeclared($id.getText()); if (!declarado) {throw new IllegalArgumentException("Variável não declarada: " + $id.getText());}}) {pele.code+=$value != null ? $value.getText() : $id.getText();} op = OPREL {pele.code+=$op.getText();} (value = INT | value = DECIMAL | value = STRING) {pele.code+=$value.getText();};
 
 end: 'fine' {pele.printFim();};
 

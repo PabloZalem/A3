@@ -17,6 +17,7 @@ se(a > 10)
     scrivere("b");
 }
 
+int i = 1;
 mentre(i < 3)
 {
      scrivere("Numero 10");
