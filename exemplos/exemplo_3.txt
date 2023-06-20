@@ -10,11 +10,11 @@ a = 15+15;
 se(a > 10)
 {
     a = 15 + 20;
-    scrivere("a");
+    scrivere(a);
 }altrimenti
 {
     b = "Vai Corinthians";
-    scrivere("b");
+    scrivere(b);
 }
 
 int i = 1;
