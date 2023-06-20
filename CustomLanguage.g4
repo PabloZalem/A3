@@ -21,7 +21,9 @@ statement:
 	| ifStatement
 	| loopStatement
 	| scanfStatement
-	| printStatement;
+	| printStatement
+	| incrementVariable
+	| decrementVariable;
 
 variableDeclaration: type=('int' | 'float' | 'string' | 'bool') id=ID '=' mathExpression
  ';' {pele.declararVariavel($id.getText(), $type.getText());};
@@ -32,6 +34,10 @@ mathExpression: (value = INT {pele.adicionaBuffer($value.getText());} | value = 
 
 logicExpression: (value = INT | value = DECIMAL | value = STRING | id = ID {boolean declarado = pele.checkVariableDeclared($id.getText()); if (!declarado) {throw new IllegalArgumentException("Variável não declarada: " + $id.getText());}}) {pele.code+=$value != null ? $value.getText() : $id.getText();} op = OPREL {pele.code+=$op.getText();} (value = INT | value = DECIMAL | value = STRING) {pele.code+=$value.getText();};
 
+incrementVariable: id = ID '++;' {pele.incrementaVariavel($id.getText());};
+
+decrementVariable: id = ID '--;' {pele.decrementaVariavel($id.getText());};
+
 end: 'fine' {pele.printFim();};
 
 ifStatement: 'se' '(' {pele.code += "\nif(";} logicExpression ')' {pele.code += ")\n";} block ('altrimenti' {pele.code += "else\n";} block)?;
@@ -40,11 +46,11 @@ loopStatement: whileStatement | doWhileStatement ;
 
 whileStatement: 'mentre' '(' {pele.code += "\nwhile(";} logicExpression ')'{pele.code += ")";} block;
 
-doWhileStatement: 'fare' {pele.code += "\ndo";} block 'mentre' '(' {pele.code += "\nwhile(";} logicExpression ')' ';' {pele.code += ");";};
+doWhileStatement: 'fare' {pele.code += "\ndo";} block 'mentre' '(' {pele.code += "while(";} logicExpression ')' ';' {pele.code += ");";};
 
 block: '{' {pele.printAC();} statement* '}' {pele.printFC();};
 
-scanfStatement: 'leggere' '(' ID ')';
+scanfStatement: 'leggere' '(' id = ID ',' question = STRING ')' ';' {pele.lerUserInput($id.getText(), $question.getText());};
 
 printStatement:
 	'scrivere' '(' (id = ID | str = STRING) ')' ';' {pele.printString($id != null ? $id.getText() : $str.getText());

@@ -23,6 +23,7 @@ public class Pele {
 
     // Method that adds public class and private main method
     protected void printInicio() {
+        code += "import java.util.Scanner;\n";
         code += "public class Output {\n";
         code += "public static void main(String[] args) {\n";
     }
@@ -58,6 +59,16 @@ public class Pele {
         }
 
         code+= nome + "++;\n";
+    }
+
+    protected void decrementaVariavel(String nome){
+        boolean isdeclared = checkVariableDeclared(nome);
+        
+        if (!isdeclared) {
+            throw new IllegalArgumentException("Variável não declarada: " + nome);
+        }
+
+        code+= nome + "--;\n";
     }
 
     protected void declararVariavel(String nome, String tipo) {
@@ -105,7 +116,7 @@ public class Pele {
             tipo = "double";
         }
 
-        code += tipo + " " + nome + " = " + valor + ";";
+        code += tipo + " " + nome + " = " + valor + ";\n";
         this.limpaBuffer();
     }
 
@@ -147,7 +158,7 @@ public class Pele {
         if (tipo.equals("bool")) {
             valor = getValidJavaBoolean(valor);
         }
-        code += nome + " = " + valor + ";";
+        code += nome + " = " + valor + ";\n";
         this.limpaBuffer();
     }
 
@@ -162,7 +173,6 @@ public class Pele {
     }
 
     private boolean checkVariableType(String valor, String tipo){
-        System.out.println("Valor: " + valor + " Tipo: " + tipo);
         if (tipo.toLowerCase().equals("int")) {
             try {
                 Integer.parseInt(valor);
@@ -194,6 +204,35 @@ public class Pele {
         } else {
             return true;
         }
+    }
+
+    protected void lerUserInput(String id, String question){
+        // Verifica se a variável já foi declarada
+        boolean isdeclared = checkVariableDeclared(id);
+
+        if (!isdeclared) {
+            throw new IllegalArgumentException("Variável não declarada: " + id);
+        }
+
+        // Obtem o tipo da variavel
+        String tipo = this.symbolTable.get(id);
+
+        code += "Scanner userInput = new Scanner(System.in);\n";
+        code += "System.out.println(" + question + ");\n";
+        if (tipo.toLowerCase().equals("int")) {
+            code += id + " = userInput.nextInt();\n";
+        } else if (tipo.toLowerCase().equals("float")) {
+            code += id + " = userInput.nextDouble();\n";
+        } else if (tipo.toLowerCase().equals("string")) {
+            code += id + " = userInput.nextLine();\n";
+        } else if (tipo.toLowerCase().equals("bool")) {
+            code += id + " = userInput.nextLine();\n";
+        } else {
+            throw new IllegalArgumentException("Tipo de variável inválido: " + tipo);
+        }
+
+        
+        code += "userInput.close();\n";
     }
 
     // Method that writes the code string to a java file
