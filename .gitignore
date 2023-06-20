@@ -3,3 +3,7 @@ CustomLanguage*.java
 *.tokens
 *.interp
 Output.java
+PeleBaseListener.java
+PeleLexer.java
+PeleParser.java
+PeleListener.java

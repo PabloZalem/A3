@@ -1,4 +1,4 @@
-grammar CustomLanguage;
+grammar Pele;
 
 @header {
 import org.antlr.v4.runtime.*;
@@ -25,7 +25,7 @@ statement:
 	| incrementVariable
 	| decrementVariable;
 
-variableDeclaration: type=('int' | 'float' | 'string' | 'bool') id=ID '=' mathExpression
+variableDeclaration: type=('int' | 'float' | 'string') id=ID '=' mathExpression
  ';' {pele.declararVariavel($id.getText(), $type.getText());};
 
 assignment: id=ID '=' mathExpression ';' {pele.atribuirVariavel($id.getText());};
@@ -55,8 +55,6 @@ scanfStatement: 'leggere' '(' id = ID ',' question = STRING ')' ';' {pele.lerUse
 printStatement:
 	'scrivere' '(' (id = ID | str = STRING) ')' ';' {pele.printString($id != null ? $id.getText() : $str.getText());
 		};
-
-BOOL: 'vero' | 'falso';
 
 // Definição dos tokens léxicos
 ID: [a-zA-Z][a-zA-Z0-9_]*;
